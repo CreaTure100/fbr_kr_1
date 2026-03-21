@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const { nanoid } = require('nanoid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -14,6 +14,8 @@ const REFRESH_SECRET = 'refresh_secret_key';
 
 const ACCESS_EXPIRES_IN = '15m';
 const REFRESH_EXPIRES_IN = '7d';
+
+let refreshTokens = new Set();
 
 app.use(express.json());
 
@@ -265,87 +267,6 @@ app.post('/api/auth/login', async (req, res) => {
     res.status(500).json({ error: 'Внутренняя ошибка сервера' });
   }
 });
-
-/**
- * @swagger
- * /api/auth/refresh:
- *   post:
- *     summary: Обновление пары токенов по refresh-токену
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - refreshToken
- *             properties:
- *               refreshToken:
- *                 type: string
- *                 description: Refresh токен для получения новой пары
- *                 example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
- *     responses:
- *       200:
- *         description: Успешное обновление токенов
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 accessToken:
- *                   type: string
- *                 refreshToken:
- *                   type: string
- *       400:
- *         description: refreshToken не предоставлен
- *       401:
- *         description: Недействительный или истекший refresh токен
- */
-app.post('/api/auth/refresh', (req, res) => {
-  const { refreshToken } = req.body;
-
-  if (!refreshToken) {
-    return res.status(400).json({
-      error: "refreshToken is required"
-    });
-  }
-
-  if (!refreshTokens.has(refreshToken)) {
-    return res.status(401).json({
-      error: "Invalid refresh token"
-    });
-  }
-
-  try {
-    const payload = jwt.verify(refreshToken, REFRESH_SECRET);
-
-    const user = users.find((u) => u.id === payload.sub);
-    if (!user) {
-      return res.status(401).json({
-        error: "User not found"
-      });
-    }
-
-    refreshTokens.delete(refreshToken);
-
-    const newAccessToken = generateAccessToken(user);
-    const newRefreshToken = generateRefreshToken(user);
-
-    refreshTokens.add(newRefreshToken);
-
-    res.json({
-      accessToken: newAccessToken,
-      refreshToken: newRefreshToken,
-    });
-
-  } catch (err) {
-    return res.status(401).json({
-      error: "Invalid or expired refresh token"
-    });
-  }
-});
-
 
 /**
  * @swagger

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Заметки (13-18)</title>
+  <link rel="stylesheet" href="https://unpkg.com/chota@latest" />
+</head>
+<body class="container">
+<h1>>А вот и «Заметки» - наше первое оффлайн-приложение</h1>
+<p>
+  Это офлайн‑приложение для заметок: записи сохраняются в <code>localStorage</code>,
+  а интерфейс и скрипты кэшируются через <code>Service Worker</code>.
+  Поэтому вы можете просматривать и добавлять заметки даже без подключения к интернету.
+</p>
+
+<form id="todo-form" class="row">
+  <input
+    id="todo-input"
+    class="col-9"
+    type="text"
+    placeholder="Введите задачу..."
+    required
+  />
+  <button class="col-3" type="submit">Добавить</button>
+</form>
+
+<ul id="todo-list"></ul>
+
+<script src="./app.js"></script>
+</body>
+</html>

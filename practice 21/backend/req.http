@@ -1,0 +1,84 @@
+### 1. Регистрация администратора
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "first_name": "Admin",
+  "last_name": "User",
+  "password": "password123",
+  "role": "admin"
+}
+
+### 2. Авторизация и сохранение токена
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "password123"
+}
+
+> {%
+  client.global.set("auth_token", response.body.accessToken);
+%}
+
+### 3. Получить список товаров
+GET http://localhost:3000/api/products
+Authorization: Bearer {{auth_token}}
+
+### 4. Получить список товаров
+GET http://localhost:3000/api/products
+Authorization: Bearer {{auth_token}}
+
+### 5. Создаем новый товар
+POST http://localhost:3000/api/products
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "title": "Новый мощный ноутбук",
+  "category": "Электроника",
+  "description": "Тестирую сброс кэша",
+  "price": 99999
+}
+
+> {%
+  client.global.set("product_id", response.body.id);
+%}
+
+### 6. Получить список товаров
+GET http://localhost:3000/api/products
+Authorization: Bearer {{auth_token}}
+
+### 7. Получить конкретный товар (Первый раз)
+GET http://localhost:3000/api/products/{{product_id}}
+Authorization: Bearer {{auth_token}}
+
+### 8. Получить конкретный товар (Второй раз)
+GET http://localhost:3000/api/products/{{product_id}}
+Authorization: Bearer {{auth_token}}
+
+
+
+
+
+### 9. Получить список пользователей (Первый раз)
+GET http://localhost:3000/api/users
+Authorization: Bearer {{auth_token}}
+
+> {%
+  client.global.set("user_id", response.body[0].id);
+%}
+
+### 10. Получить список пользователей (Второй раз)
+GET http://localhost:3000/api/users
+Authorization: Bearer {{auth_token}}
+
+### 11. Получить конкретного пользователя (Первый раз)
+GET http://localhost:3000/api/users/{{user_id}}
+Authorization: Bearer {{auth_token}}
+
+### 12. Получить конкретного пользователя (Второй раз)
+GET http://localhost:3000/api/users/{{user_id}}
+Authorization: Bearer {{auth_token}}
